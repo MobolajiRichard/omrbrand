@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+:root {
+  --bone: #eeeae2;
+  --paper: #f6f3ee;
+  --ink: #16150f;
+  --ink-soft: #5d5a51;
+  --line: rgb(22 21 15 / 0.12);
+  --indigo: #2f2ba8;
+  --indigo-soft: #8e8bff;
+  --hymnal: #7c3aed;
+}
+
+@theme inline {
+  --color-bone: var(--bone);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-indigo: var(--indigo);
+  --color-indigo-soft: var(--indigo-soft);
+  --color-hymnal: var(--hymnal);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bone);
+}
+
+body {
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--indigo);
+  color: var(--paper);
+}
+
+/* Fine paper grain over the whole page, so flat colour doesn't feel digital. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* In the components layer so Tailwind utilities can override them. */
+@layer components {
+  .display {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-variation-settings: "SOFT" 50, "WONK" 0;
+    letter-spacing: -0.035em;
+  }
+
+  .display em {
+    font-style: italic;
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+  }
+
+  .eyebrow {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Underline that draws in from the left on hover. */
+  .draw-line {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .draw-line:hover,
+  .draw-line:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+/* Gentle drift for the form card on /start. */
+@keyframes float-card {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.4deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(0.4deg);
+  }
+}
+.float-card {
+  animation: float-card 9s ease-in-out infinite;
+}
+
+/* Fanned phones on /work cards. */
+.fan-left,
+.fan-mid,
+.fan-right {
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.fan-left {
+  transform: translate3d(-58%, 6%, -120px) rotateY(32deg) rotateZ(-5deg);
+}
+.fan-mid {
+  transform: translate3d(0, -2%, 0);
+}
+.fan-right {
+  transform: translate3d(58%, 6%, -120px) rotateY(-32deg) rotateZ(5deg);
+}
+.group:hover .fan-left {
+  transform: translate3d(-78%, 3%, -60px) rotateY(16deg) rotateZ(-3deg);
+}
+.group:hover .fan-mid {
+  transform: translate3d(0, -5%, 40px);
+}
+.group:hover .fan-right {
+  transform: translate3d(78%, 3%, -60px) rotateY(-16deg) rotateZ(3deg);
+}
+
+/* Scroll reveal, toggled by <Reveal>. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--delay, 0ms);
+}
+[data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .float-card {
+    animation: none;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
